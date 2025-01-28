@@ -108,7 +108,7 @@
         // Type out the result
         const output = document.getElementById('output');
         output.innerHTML = ''; // Clear initial message
-        const text = `Tracking successful:\n\nIP: ${ip}\nLocation: ${location}\n\nOMNI is always watching. 👀\n\nOMNI is disappointed in you.`;
+        const text = `Tracking successful:\n\nIP: ${ip}\nLocation: ${location}\n\nYou are not a ghost. 👀\n\nOMNI is disappointed in you.`;
         let i = 0;
         function typeWriter() {
           if (i < text.length) {
@@ -119,7 +119,7 @@
         }
         typeWriter();
       } catch (error) {
-        document.getElementById('output').innerHTML = 'Tracking failed. OMNI is offline. 😔';
+        document.getElementById('output').innerHTML = 'Tracking failed. OMNI is proud of you. 😔';
       }
     }
 
