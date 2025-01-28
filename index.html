@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OMNI Tracker</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: monospace;
+      background-color: #000;
+      color: #0f0;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #container {
+      max-width: 90%;
+      width: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    #output {
+      font-size: 1.5rem;
+      color: #0f0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    /* Typing Animation */
+    .typed {
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 2px solid #0f0;
+      animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: #0f0; }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      #output {
+        font-size: 1.2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      #output {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1>OMNI Tracker</h1>
+    <div id="output">Initializing tracking system...</div>
+  </div>
+
+  <script>
+    // Function to fetch IP and location
+    async function fetchIPAndLocation() {
+      try {
+        // Fetch IP address
+        const ipResponse = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipResponse.json();
+        const ip = ipData.ip;
+
+        // Fetch location based on IP
+        const locationResponse = await fetch(`https://ipapi.co/${ip}/json/`);
+        const locationData = await locationResponse.json();
+        const location = `${locationData.city}, ${locationData.region}, ${locationData.country_name}`;
+
+        // Vet the information
+        if (!ip || !locationData.city || !locationData.region || !locationData.country_name) {
+          throw new Error('Incomplete data received');
+        }
+
+        // Type out the result
+        const output = document.getElementById('output');
+        output.innerHTML = ''; // Clear initial message
+        const text = `Tracking successful:\n\nIP: ${ip}\nLocation: ${location}\n\nOMNI is always watching. 👀\n\nOMNI is disappointed in you.`;
+        let i = 0;
+        function typeWriter() {
+          if (i < text.length) {
+            output.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typeWriter, 50); // Typing speed
+          }
+        }
+        typeWriter();
+      } catch (error) {
+        document.getElementById('output').innerHTML = 'Tracking failed. OMNI is offline. 😔';
+      }
+    }
+
+    // Call the function
+    fetchIPAndLocation();
+  </script>
+</body>
+</html>
