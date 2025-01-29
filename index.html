@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,6 +37,23 @@
       color: #0f0;
       white-space: pre-wrap;
       word-wrap: break-word;
+      min-height: 150px;
+    }
+
+    /* Start Button */
+    #startButton {
+      background-color: #0f0;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-bottom: 20px;
+    }
+
+    #startButton:hover {
+      background-color: #090;
     }
 
     /* Typing Animation */
@@ -83,32 +99,48 @@
 <body>
   <div id="container">
     <h1>OMNI Tracker</h1>
-    <div id="output">Initializing tracking system...</div>
+    <button id="startButton">Start Tracking</button>
+    <div id="output">Click the button to begin tracking...</div>
   </div>
 
   <script>
-    // Function to fetch IP and location
-    async function fetchIPAndLocation() {
+    // Function to fetch IP, location, and system details
+    async function fetchTrackingInfo() {
       try {
-        // Fetch IP address
         const ipResponse = await fetch('https://api.ipify.org?format=json');
         const ipData = await ipResponse.json();
         const ip = ipData.ip;
 
-        // Fetch location based on IP
         const locationResponse = await fetch(`https://ipapi.co/${ip}/json/`);
         const locationData = await locationResponse.json();
-        const location = `${locationData.city}, ${locationData.region}, ${locationData.country_name}`;
+        const city = locationData.city;
+        const region = locationData.region;
+        const country = locationData.country_name;
 
-        // Vet the information
-        if (!ip || !locationData.city || !locationData.region || !locationData.country_name) {
-          throw new Error('Incomplete data received');
-        }
+        // Device, OS, and Browser Detection
+        const userAgent = navigator.userAgent;
+        let os = "Unknown OS";
+        if (userAgent.indexOf("Win") !== -1) os = "Windows";
+        else if (userAgent.indexOf("Mac") !== -1) os = "MacOS";
+        else if (userAgent.indexOf("Linux") !== -1) os = "Linux";
+        else if (userAgent.indexOf("Android") !== -1) os = "Android";
+        else if (userAgent.indexOf("iPhone") !== -1 || userAgent.indexOf("iPad") !== -1) os = "iOS";
 
-        // Type out the result
+        let browser = "Unknown Browser";
+        if (userAgent.indexOf("Chrome") !== -1) browser = "Google Chrome";
+        else if (userAgent.indexOf("Firefox") !== -1) browser = "Mozilla Firefox";
+        else if (userAgent.indexOf("Safari") !== -1 && userAgent.indexOf("Chrome") === -1) browser = "Safari";
+        else if (userAgent.indexOf("Edge") !== -1) browser = "Microsoft Edge";
+        else if (userAgent.indexOf("Opera") !== -1 || userAgent.indexOf("OPR") !== -1) browser = "Opera";
+
+        // Get Current Time
+        const currentTime = new Date().toLocaleTimeString();
+
+        // Typewriter effect
         const output = document.getElementById('output');
         output.innerHTML = ''; // Clear initial message
-        const text = `Tracking successful:\n\nIP: ${ip}\nLocation: ${location}\n\nYou are not a ghost. 👀\n\nOMNI is disappointed in you.`;
+        const text = `Tracking successful:\n\nIP: ${ip}\nLocation: ${city}, ${region}\nCountry: ${country}\nTime: ${currentTime}\nOS: ${os}\nBrowser: ${browser}\n\nYou are not a ghost. 👀\n\nOMNI is disappointed in you.`;
+        
         let i = 0;
         function typeWriter() {
           if (i < text.length) {
@@ -123,8 +155,8 @@
       }
     }
 
-    // Call the function
-    fetchIPAndLocation();
+    // Event listener for Start Button
+    document.getElementById('startButton').addEventListener('click', fetchTrackingInfo);
   </script>
 </body>
 </html>
